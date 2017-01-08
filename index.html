@@ -23,15 +23,32 @@ var client = new Paho.MQTT.Client(
 					port,
 					"web_" + parseInt(Math.random() * 100,
 					10));
+var options = {
+    useSSL: useTLS,
+    userName: username,
+    password: password,
+    onSuccess:onConnect,
+	onFailure:doFail
+ }
+
 client.onMessageArrived = onMessage;
 client.onconnectionlost = onDisconnect;
+
 function onConnect(){
 	client.subscribe(topic,onMessage);
 	console.log("mqtt connected");
 }
 
 console.log("bar");
-client.connect({onSuccess:onConnect});
+client.connect(options,{onSuccess:onConnect});
+
+
+function doFail(e){
+    console.log("mqtt connection failed");
+	console.log(e);
+  }
+
+
 
 function onMessage(message) {
 	//console.log(message.topic + "- " + message.payload);
